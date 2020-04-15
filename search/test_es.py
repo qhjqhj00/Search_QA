@@ -189,7 +189,7 @@ for d in tqdm(data):
         if i == 2:
             bad.append({'query':d[-2],'right':cc[d[1]], 'top-1':top1, 'answer': d[-1], 'es': doc})
 print(len(bad))
-with open('bad_case.json', 'w') as f:
+with open('../data/bad_case.json', 'w') as f:
     json.dump(bad,f,indent=4,ensure_ascii = False)
                 
 print(r/n)

@@ -132,7 +132,6 @@ with open('../data/NCPPolicies_test_recall.csv', 'w') as f:
         tagList = jieba.analyse.extract_tags(d[-1], topK = 8)
         tagList = list(set(tagList))
         delete_common(tagList)
-        #if len(query) == 0:
         q_l = list(set(query['e'] + query['t'] + query['n']))
         doc = {
               "query": {
