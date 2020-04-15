@@ -15,11 +15,11 @@ python test_mrc.py \
   --task_name=$TASK_NAME \
   --vocab_file=$BERT_DIR/vocab.txt \
   --bert_config_file=$BERT_DIR/bert_config.json \
-  --init_restore_dir=$OUTPUT_DIR/$TASK_NAME/$MODEL_NAME/ \
-  --output_dir=$OUTPUT_DIR/$TASK_NAME/$MODEL_NAME/ \
-  --test_dir1=$GLUE_DIR/$TASK_NAME/test_examples.json \
-  --test_dir2=$GLUE_DIR/$TASK_NAME/test_features.json \
-  --test_file=$GLUE_DIR/$TASK_NAME/squad_test.json \
+  --init_restore_dir=$OUTPUT_DIR/$MODEL_NAME/ \
+  --output_dir=$OUTPUT_DIR/$MODEL_NAME/ \
+  --test_dir1=$GLUE_DIR/test_examples.json \
+  --test_dir2=$GLUE_DIR/test_features.json \
+  --test_file=$GLUE_DIR/squad_test.json \
 
 
 

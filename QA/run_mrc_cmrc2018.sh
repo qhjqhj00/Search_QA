@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
 CURRENT_DIR=$(cd -P -- "$(dirname -- "$0")" && pwd -P)
-export MODEL_NAME=roberta_wwm_large
+export MODEL_NAME=roberta
 export OUTPUT_DIR=$CURRENT_DIR/check_points
 export BERT_DIR=robert
-export GLUE_DIR=$CURRENT_DIR/mrc_data # set your data dir
+export GLUE_DIR=$CURRENT_DIR/data # set your data dir
 TASK_NAME="CMRC2018"
 
 python run_mrc.py \
@@ -19,12 +19,12 @@ python run_mrc.py \
   --vocab_file=$BERT_DIR/vocab.txt \
   --bert_config_file=$BERT_DIR/bert_config.json \
   --init_restore_dir=$BERT_DIR/pytorch_model.pth \
-  --train_dir=$GLUE_DIR/$TASK_NAME/train_features.json \
-  --train_file=$GLUE_DIR/$TASK_NAME/train_squad.json \
-  --dev_dir1=$GLUE_DIR/$TASK_NAME/dev_examples.json \
-  --dev_dir2=$GLUE_DIR/$TASK_NAME/dev_features.json \
-  --dev_file=$GLUE_DIR/$TASK_NAME/dev_squad.json \
-  --checkpoint_dir=$OUTPUT_DIR/$TASK_NAME/$MODEL_NAME/
+  --train_dir=$GLUE_DIR/train_features.json \
+  --train_file=$GLUE_DIR/train_squad.json \
+  --dev_dir1=$GLUE_DIR/dev_examples.json \
+  --dev_dir2=$GLUE_DIR/dev_features.json \
+  --dev_file=$GLUE_DIR/dev_squad.json \
+  --checkpoint_dir=$OUTPUT_DIR/$MODEL_NAME/
 
 
 
