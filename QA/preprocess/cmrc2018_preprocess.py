@@ -83,7 +83,7 @@ def _check_is_max_context(doc_spans, cur_span_index, position):
     return cur_span_index == best_span_index
 
 
-def json2features(input_file, output_files, tokenizer, is_training=False, repeat_limit=3, max_query_length=64,
+def json2features(input_file, output_files, tokenizer, is_training=False, repeat_limit=3, max_query_length=96,
                   max_seq_length=512, doc_stride=128):
     with open(input_file, 'r') as f:
         train_data = json.load(f)
