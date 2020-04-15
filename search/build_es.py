@@ -45,7 +45,7 @@ def mergeLexN(lineList):
 
 def getTagMap():
     queryDict = {}
-    f = open("./queryWord")
+    f = open("../data/queryWord")
     datalines = f.readlines()
     f.close()
     for line in datalines:
@@ -112,7 +112,7 @@ class ElasticObj:
         ACTIONS = []
         i = 1
         #d = getTagMap()
-        with open("context_with_kw.csv") as f:
+        with open("../data/context_with_kw.csv") as f:
             for line in f:
                 if i == 1:
                     i += 1

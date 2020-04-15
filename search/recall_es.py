@@ -49,7 +49,7 @@ def delete_common(l):
     
 def getTagMap():
     queryDict = {}
-    f = open("./processed_comb.txt")
+    f = open("../data/processed_comb.txt")
     datalines = f.readlines()
     f.close()
     for line in datalines:
@@ -113,8 +113,8 @@ def analyseQuery(queryDict, query):
         return {'n': [], 'e': [], 't':[]}
 
 queryDict = getTagMap()
-data = load('NCPPolicies_test.csv')
-cc = load('NCPPolicies_context_20200301.csv')
+data = load('../data/NCPPolicies_test.csv')
+cc = load('../data/NCPPolicies_context_20200301.csv')
 cc = {k[0]:k[1] for k in cc}
 from tqdm import tqdm
 n = 0
@@ -122,7 +122,7 @@ r = 0
 from collections import Counter
 top = Counter()
 
-with open('NCPPolicies_test_recall.csv', 'w') as f:
+with open('../data/NCPPolicies_test_recall.csv', 'w') as f:
     jres = {"version": "v1.0",
            "data": []}
     for d in tqdm(data):

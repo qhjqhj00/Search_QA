@@ -2,9 +2,9 @@
 
 CURRENT_DIR=$(cd -P -- "$(dirname -- "$0")" && pwd -P)
 export MODEL_NAME=roberta
-export OUTPUT_DIR=$CURRENT_DIR/check_points
-export BERT_DIR=robert
-export GLUE_DIR=$CURRENT_DIR/data # set your data dir
+export OUTPUT_DIR=../output
+export BERT_DIR=../model/robert
+export GLUE_DIR=../data # set your data dir
 TASK_NAME="CMRC2018"
 
 python run_mrc.py \
