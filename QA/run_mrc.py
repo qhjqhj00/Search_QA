@@ -14,6 +14,31 @@ from tools.pytorch_optimization import get_optimization, warmup_linear
 from torch.utils.data import TensorDataset, DataLoader
 from tqdm import tqdm
 
+class FGM():
+    def __init__(self, model):
+        self.model = model
+        self.backup = {}
+
+    def attack(self, epsilon=1., emb_name='robert.embeddings.word_embeddings.weight'):
+        # emb_name这个参数要换成你模型中embedding的参数名
+        for name, param in self.model.named_parameters():
+#             print(name, type(param),param)
+            if param.requires_grad and emb_name in name:
+#                 print(name)
+                self.backup[name] = param.data.clone()
+#                 print(param.grad)
+                norm = torch.norm(param.grad)
+                if norm != 0 and not torch.isnan(norm):
+                    r_at = epsilon * param.grad / norm
+                    param.data.add_(r_at)
+
+    def restore(self, emb_name='robert.embeddings.word_embeddings.weight'):
+        # emb_name这个参数要换成你模型中embedding的参数名
+        for name, param in self.model.named_parameters():
+            if param.requires_grad and emb_name in name:
+                assert name in self.backup
+                param.data = self.backup[name]
+        self.backup = {}
 
 def evaluate(model, args, eval_examples, eval_features, device, global_steps, best_f1, best_em, best_f1_em):
     print("***** Eval *****")
@@ -209,6 +234,7 @@ if __name__ == '__main__':
         if args.float16:
             model.half()
         model.to(device)
+        fgm = FGM(model)
         if n_gpu > 1:
             model = torch.nn.DataParallel(model)
         optimizer = get_optimization(model=model,
@@ -265,6 +291,13 @@ if __name__ == '__main__':
                             param_group['lr'] = lr_this_step
                     else:
                         loss.backward()
+
+                    fgm.attack() # 在embedding上添加对抗扰动
+                    loss_adv = model(input_ids, segment_ids, input_mask, start_positions, end_positions)
+                    if n_gpu > 1:
+                        loss_adv = loss_adv.mean() # mean() to average on multi-gpu.
+                    loss_adv.backward() # 反向传播，并在正常的grad基础上，累加对抗训练的梯度
+                    fgm.restore() # 恢复embedding参数
 
                     optimizer.step()
                     model.zero_grad()
