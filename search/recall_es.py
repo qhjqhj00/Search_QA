@@ -134,20 +134,22 @@ with open('../data/NCPPolicies_test_recall.csv', 'w') as f:
         delete_common(tagList)
         q_l = list(set(query['e'] + query['t'] + query['n']))
         doc = {
-              "query": {
+                "query": {
                 "function_score": {
                     "query":{
-                  "dis_max": {
+                    "dis_max": {
                     "queries": [
-                        { "match": { "passage": {"query":q,"boost":2.5}}},
+                        { "match": { "passage": {"query":re.sub('\s+','',d[-1]),"boost":2.5}}},
+                        { "match": { "passage": {"query":','.join(tagList),"boost":2.5}}},
+                        { "match": { "passage": {"query":','.join(q_l),"boost":2.5}}},
                         { "match": { "word_phrase": {"query":','.join(tagList),"boost":1.5}}},
                         { "match": { "entities": {"query":','.join(q_l),"boost":1}}}
                     ],
-                      "tie_breaker": 0.35
-                  }},
-                  "functions": [],
-                  "score_mode": "sum",
-                  "boost_mode": "multiply"}
+                        "tie_breaker": 0.4
+                    }},
+                    "functions": [],
+                    "score_mode": "sum",
+                    "boost_mode": "sum"}
             }}
         
         for e in query['e']:

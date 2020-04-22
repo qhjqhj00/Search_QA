@@ -157,14 +157,16 @@ for d in tqdm(data):
                 "dis_max": {
                 "queries": [
                     { "match": { "passage": {"query":re.sub('\s+','',d[-2]),"boost":2.5}}},
+                    { "match": { "passage": {"query":','.join(tagList),"boost":2.5}}},
+                    { "match": { "passage": {"query":','.join(q_l),"boost":2.5}}},
                     { "match": { "word_phrase": {"query":','.join(tagList),"boost":1.5}}},
                     { "match": { "entities": {"query":','.join(q_l),"boost":1}}}
                 ],
-                    "tie_breaker": 0.35
+                    "tie_breaker": 0.4
                 }},
                 "functions": [],
                 "score_mode": "sum",
-                "boost_mode": "multiply"}
+                "boost_mode": "sum"}
         }}
     
     for e in query['e']:
