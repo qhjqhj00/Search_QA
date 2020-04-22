@@ -15,7 +15,7 @@ def write_predictions_topk(FLAGS, all_examples, all_features, all_results, n_bes
          "start_log_prob", "end_log_prob"])
 
     _NbestPrediction = collections.namedtuple(  # pylint: disable=invalid-name
-        "NbestPrediction", ["text", "start_log_prob", "end_log_prob"])
+        "NbestPrediction", ["text", "start_log_prob", "end_log_prob", "start_index", "end_index"])
 
     """Write final predictions to the json file and log-odds of null if needed."""
     print("Writing predictions to: %s" % (output_prediction_file))
@@ -111,14 +111,18 @@ def write_predictions_topk(FLAGS, all_examples, all_features, all_results, n_bes
                 _NbestPrediction(
                     text=final_text,
                     start_log_prob=pred.start_log_prob,
-                    end_log_prob=pred.end_log_prob))
+                    end_log_prob=pred.end_log_prob,
+                    start_index=pred.start_index,
+                    end_index=pred.end_index))
 
         # In very rare edge cases we could have no valid predictions. So we
         # just create a nonce prediction in this case to avoid failure.
         if not nbest:
             nbest.append(
                 _NbestPrediction(text="", start_log_prob=-1e6,
-                                 end_log_prob=-1e6))
+                                 end_log_prob=-1e6, 
+                                 start_index=pred.start_index,
+                                 end_index=pred.end_index))
 
         total_scores = []
         best_non_null_entry = None
@@ -136,6 +140,8 @@ def write_predictions_topk(FLAGS, all_examples, all_features, all_results, n_bes
             output["probability"] = probs[i]
             output["start_log_prob"] = entry.start_log_prob
             output["end_log_prob"] = entry.end_log_prob
+            output["start_index"] = entry.start_index
+            output["end_index"] = entry.end_index
             nbest_json.append(output)
 
         assert len(nbest_json) >= 1
@@ -242,7 +248,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
             reverse=True)
 
         _NbestPrediction = collections.namedtuple(  # pylint: disable=invalid-name
-            "NbestPrediction", ["text", "start_logit", "end_logit"])
+            "NbestPrediction", ["text", "start_logit", "end_logit","start_index", "end_index"])
 
         seen_predictions = {}
         nbest = []
@@ -279,7 +285,9 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
                 _NbestPrediction(
                     text=final_text,
                     start_logit=pred.start_logit,
-                    end_logit=pred.end_logit))
+                    end_logit=pred.end_logit,
+                    start_index=pred.start_index,
+                    end_index=pred.end_index))
         # if we didn't include the empty option in the n-best, include it
         if version_2_with_negative:
             if "" not in seen_predictions:
@@ -287,17 +295,24 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
                     _NbestPrediction(
                         text="",
                         start_logit=null_start_logit,
-                        end_logit=null_end_logit))
+                        end_logit=null_end_logit,
+                        start_index=pred.start_index,
+                        end_index=pred.end_index))
 
             # In very rare edge cases we could only have single null prediction.
             # So we just create a nonce prediction in this case to avoid failure.
             if len(nbest) == 1:
-                nbest.insert(0, _NbestPrediction(text="empty", start_logit=0.0, end_logit=0.0))
+                nbest.insert(0, _NbestPrediction(
+                    text="empty", start_logit=0.0, 
+                    end_logit=0.0，start_index=pred.start_index,
+                                 end_index=pred.end_index))
 
         # In very rare edge cases we could have no valid predictions. So we
         # just create a nonce prediction in this case to avoid failure.
         if not nbest:
-            nbest.append(_NbestPrediction(text="empty", start_logit=0.0, end_logit=0.0))
+            nbest.append(_NbestPrediction(text="empty", start_logit=0.0, 
+                        end_logit=0.0，start_index=pred.start_index,
+                                 end_index=pred.end_index))
 
         assert len(nbest) >= 1
 
@@ -318,6 +333,8 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
             output["probability"] = float(probs[i])
             output["start_logit"] = float(entry.start_logit)
             output["end_logit"] = float(entry.end_logit)
+            output["start_index"] = entry.start_index
+            output["end_index"] = entry.end_index
             nbest_json.append(output)
 
         assert len(nbest_json) >= 1

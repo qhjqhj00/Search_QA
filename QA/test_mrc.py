@@ -127,7 +127,7 @@ if __name__ == '__main__':
 
     if not os.path.exists(args.test_dir1):
         json2features(input_file=args.test_file, output_files=[args.test_dir1, args.test_dir2],
-                      tokenizer=tokenizer, is_training=False, repeat_limit=3, max_query_length=64,
+                      tokenizer=tokenizer, is_training=False, repeat_limit=3, max_query_length=96,
                       max_seq_length=args.max_seq_length, doc_stride=128)
     test_examples = json.load(open(args.test_dir1, 'r'))
     test_features = json.load(open(args.test_dir2, 'r'))
