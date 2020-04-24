@@ -135,6 +135,7 @@ def json2features(input_file, output_files, tokenizer, is_training=False, repeat
     for article in tqdm(train_data):
         for para in article['paragraphs']:
             context = para['context']
+            context_id = para['id']
             context_chs = _tokenize_chinese_chars(context)
             doc_tokens = []
             char_to_word_offset = []
