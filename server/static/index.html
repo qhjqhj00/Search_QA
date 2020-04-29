@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
+    <title>政务问答助手</title>
+    <link rel='stylesheet' href='./bootstrap3.3.7/css/bootstrap.min.css'>
+    <link rel="stylesheet" href="./css/AdminLTE.min.css">
+    <link rel='stylesheet' href='./css/json-viewer.css'>
+    <link rel='stylesheet' href='./css/index.css'>
+    <script src="./js/jquery-3.2.1.min.js"></script>
+    <script src="./bootstrap3.3.7/js/bootstrap.min.js"></script>
+    <script src="./js/json-viewer.js"></script>
+    <script src="./js/util.js"></script>
+  </head>
+  <body>
+    <section class="content-header">
+      <h1>政务问答助手&nbsp<small>富强、民主、文明、和谐</small></h1>
+      <ol class="breadcrumb">
+        <li><a href="/"><i class="fa fa-dashboard"></i>Home</a></li>
+        <li><a href="./docs.html"><i class="fa fa-dashboard"></i>docs</a></li>
+        <li class="active">demo</li>
+      </ol>
+    </section>
+
+    <section class="content" style="margin-top:2px;margin-left:10px;margin-right:10px;">
+        <div class='row'>
+            <div class="form-group">
+                <div class="input-group">
+                    <div class="input-group-addon">示例问题</div>
+                    <input class="form-control" type="text" value="工业和信息化部到哪家企业进行督导检查？" id="text">
+                    <span class="input-group-btn"><button id="submit" class="btn btn-default">Go</button></span>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <ul class="nav nav-tabs">
+                <li class="active"><a href="#visual" data-toggle="tab">Visual</a></li>
+                <li><a href="#editor_holder" data-toggle="tab">JSON</a></li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane fade in active" id="visual"></div>
+                <div class="tab-pane fade" id="editor_holder"></div>
+            </div>
+        </div>
+    </section>
+    <script src="./js/index.js"></script>
+  </body>
+</html>
