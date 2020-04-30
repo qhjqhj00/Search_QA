@@ -1,0 +1,5 @@
+elasticsearch==7.6.0
+torch==1.2.0
+pydict
+jieba>=0.42
+numpy

@@ -2,7 +2,7 @@
 
 CURRENT_DIR=$(cd -P -- "$(dirname -- "$0")" && pwd -P)
 
-export MODEL_NAME=roberta_wwm_large
+export MODEL_NAME=robert
 export OUTPUT_DIR=../output
 export BERT_DIR=../model/robert
 export GLUE_DIR=../data # set your data dir

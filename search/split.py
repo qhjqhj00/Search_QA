@@ -1,3 +1,7 @@
+"""
+这里的代码是https://github.com/caishiqing/joint-mrc 这个repo的，直接借用，未作修改。
+"""
+
 import re
 
 __all__ = [
