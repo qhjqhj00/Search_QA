@@ -22,6 +22,4 @@ python test_mrc.py \
   --test_dir2=$GLUE_DIR/test_features.json \
   --test_file=$GLUE_DIR/squad_test.json \
 
-
-
-
+python post.py

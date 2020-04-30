@@ -22,6 +22,9 @@ python agg_test.py \
   --test_dir2=$GLUE_DIR/test_features.json \
   --test_file=$GLUE_DIR/test_squad_top30.json \
   --agg_model_dir=$AGG_DIR
+
+
+python post.py
   
 
 

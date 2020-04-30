@@ -43,3 +43,5 @@ https://github.com/joleo/government_qa_assistant
 对于这样一个模型，将初始化robert模型，其logits将按0.082的权重进行集成。
 
 本方案最终使用13个模型进行集成，分别是bert五折、robert五折、bert全量数据、robert全量数据、robert without fgm全量数据。权重按照测试集合得分分配，全量数据模型权重是拍的。
+
+对于最终结果，选取每个文档答案logits得分最高的，再根据召回的排序进行得分衰减，最终得到最后的结果。
