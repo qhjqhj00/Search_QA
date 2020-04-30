@@ -26,18 +26,51 @@ https://github.com/PaddlePaddle/models/tree/develop/PaddleNLP/lexical_analysis
 
 ```shell
 {
-          "passage" : "南安：举报违规餐饮店奖励口罩50个昨日，《南安市防控新型冠状病毒感染的肺炎疫情应急指挥部第17号通告》发布，进一步规范餐饮经营活动。根据通告，餐饮服务所有从业人员一律佩戴口罩上岗，从事直接入口食品岗位的还应佩戴手套。全面推行打包和外卖服务，一律采取“无接触”方式进行，原则上外卖送餐员不得进入店内取餐。严禁堂食、严禁包厢服务、严禁任何形式的聚餐活动。严禁街边烧烤、大排档等夜市餐饮经营活动。餐饮行业夜间经营时段不得超过21时。对不履行规定、拒不整改的一律关停整顿。对围桌聚餐、聚众饮酒等违规聚集的，一律关停，对相关责任单位和个人由公安机关按规定予以严肃处理。违规单位（个人）列入重点监管对象，造成严重後果的，列入失信黑名单，并予以曝光。为鼓励社会监督，对查证属实的举报，奖励举报人一次性口罩50个。举报电话：12315、110。",
-          "docid" : "b85afb2d621937799f35368f03da2f77",
-          "entities" : "南安市,南安",
-          "word_phrase" : "严禁,一律,口罩,餐饮,外卖,50,违规,聚餐,关停,通告",
-          "ad" : "35"
-        }
+  "passage":"南安：举报违规餐饮店奖励口罩50个昨日，《南安市防控新型冠状病毒感染的肺炎疫情应急指挥部第17号通告》发布，进一步规范餐饮经营活动。根据通告，餐饮服务所有从业人员一律佩戴口罩上岗，从事直接入口食品岗位的还应佩戴手套。全面推行打包和外卖服务，一律采取“无接触”方式进行，原则上外卖送餐员不得进入店内取餐。严禁堂食、严禁包厢服务、严禁任何形式的聚餐活动。严禁街边烧烤、大排档等夜市餐饮经营活动。餐饮行业夜间经营时段不得超过21时。对不履行规定、拒不整改的一律关停整顿。对围桌聚餐、聚众饮酒等违规聚集的，一律关停，对相关责任单位和个人由公安机关按规定予以严肃处理。违规单位（个人）列入重点监管对象，造成严重後果的，列入失信黑名单，并予以曝光。为鼓励社会监督，对查证属实的举报，奖励举报人一次性口罩50个。举报电话：12315、110。",
+  "docid":"b85afb2d621937799f35368f03da2f77",
+  "entities":"南安市,南安",
+  "word_phrase":"严禁,一律,口罩,餐饮,外卖,50,违规,聚餐,关停,通告",
+  "ad":"35"
+}
 ```
 
 下面是一个query的示例，分析方法与passage一样：
 
 ```shell
-{'query': {'function_score': {'query': {'dis_max': {'queries': [{'match': {'passage': {'query': '内江市近期去过武汉的人出现感染症状如何处理？', 'boost': 2.5}}}, {'match': {'passage': {'query': '如何,症状,内江市,武汉,处理,感染,近期,去过', 'boost': 2.5}}}, {'match': {'passage': {'query': '感染症状,内江市,武汉', 'boost': 2.5}}}, {'match': {'word_phrase': {'query': '如何,症状,内江市,武汉,处理,感染,近期,去过', 'boost': 1.5}}}, {'match': {'entities': {'query': '感染症状,内江市,武汉', 'boost': 1}}}, {'match': {'ad': {'query': '42 51', 'boost': 8}}}], 'tie_breaker': 0.4}}, 'functions': [{'filter': {'term': {'passage': '内江市'}}, 'weight': 4}, {'filter': {'term': {'passage': '武汉'}}, 'weight': 4}, {'filter': {'term': {'passage': '感染症状'}}, 'weight': 5}, {'filter': {'term': {'passage': '如何'}}, 'weight': 8}, {'filter': {'term': {'passage': '症状'}}, 'weight': 8}, {'filter': {'term': {'passage': '内江市'}}, 'weight': 8}, {'filter': {'term': {'passage': '武汉'}}, 'weight': 8}, {'filter': {'term': {'passage': '处理'}}, 'weight': 8}, {'filter': {'term': {'passage': '感染'}}, 'weight': 8}, {'filter': {'term': {'passage': '近期'}}, 'weight': 8}, {'filter': {'term': {'passage': '去过'}}, 'weight': 8}], 'score_mode': 'sum', 'boost_mode': 'sum'}}}
+{
+  "query":{
+    "function_score":{
+      "query":{
+        "dis_max":{
+          "queries":[
+            {"match":{"passage":{"query":"内江市近期去过武汉的人出现感染症状如何处理？","boost":2.5}}},
+            {"match":{"passage":{"query":"如何,症状,内江市,武汉,处理,感染,近期,去过","boost": 2.5}}},
+            {"match":{"passage":{"query":"感染症状,内江市,武汉","boost":2.5}}},
+            {"match":{"word_phrase":{"query":"如何,症状,内江市,武汉,处理,感染,近期,去过","boost":1.5}}},
+            {"match":{"entities":{"query":"感染症状,内江市,武汉","boost":1}}},
+            {"match":{"ad":{"query":"42 51","boost":8}}}
+          ],
+          "tie_breaker":0.4
+        }
+      },
+      "functions":[
+        {"filter":{"term":{"passage":"内江市"}},"weight":4},
+        {"filter":{"term":{"passage":"武汉"}},"weight":4},
+        {"filter":{"term":{"passage":"感染症状"}},"weight":5},
+        {"filter":{"term":{"passage":"如何"}},"weight":8},
+        {"filter":{"term":{"passage":"症状"}},"weight":8},
+        {"filter":{"term":{"passage":"内江市"}},"weight":8},
+        {"filter":{"term":{"passage":"武汉"}}, "weight":8},
+        {"filter":{"term":{"passage":"处理"}}, "weight":8},
+        {"filter":{"term":{"passage":"感染"}}, "weight":8},
+        {"filter":{"term":{"passage":"近期"}}, "weight":8},
+        {"filter":{"term":{"passage":"去过"}}, "weight":8}
+      ],
+      "score_mode": "sum",
+      "boost_mode": "sum"
+    }
+  }
+}
 ```
 
 ### ik自定义词典
