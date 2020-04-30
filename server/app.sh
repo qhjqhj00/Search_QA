@@ -1,4 +1,7 @@
 python app.py \
---init_restore_dir ../output/roberta_cmrc/checkpoint_score_f1-88.795_em-86.774.pth \
---bert_config_file bert_config.json \
---vocab_file vocab.txt
+--init_restore_dir ../output/robert/model.pth \ # 在这修改模型路径
+--bert_config_file bert_config.json \ # 在这修改模型配置路径
+--vocab_file vocab.txt \
+--port 4633 \
+--es_ip 192.168.1.29 \
+--es_port 9200

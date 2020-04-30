@@ -19,7 +19,10 @@ app = Flask(__name__, static_url_path='')
 parser = argparse.ArgumentParser()
 parser.add_argument('--init_restore_dir', type=str, required=True)
 parser.add_argument('--bert_config_file', type=str, required=True)
-parser.add_argument('--vocab_file', type=str, required=True)
+parser.add_argument('--port', type=int, required=True)
+parser.add_argument('--es_ip', type=str, required=True)
+parser.add_argument('--es_port', type=int, required=True)
+
 args = parser.parse_args()
 
 print('init model...')
@@ -31,8 +34,8 @@ utils.torch_show_all_params(model)
 utils.torch_init_model(model, args.init_restore_dir)
 
 es = Elasticsearch(
-    ['192.168.1.29'],
-    port=9200
+    [args.es_ip],
+    port=args.es_port
 )
 
 def predict(model, eval_examples, eval_features):
@@ -98,7 +101,7 @@ def index():
     return app.send_static_file('index.html')
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=4633, debug=True)
+    app.run(host='0.0.0.0', port=args.port, debug=True)
     
 
 
