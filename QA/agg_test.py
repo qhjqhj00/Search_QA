@@ -86,6 +86,7 @@ if __name__ == '__main__':
     parser.add_argument('--test_dir2', type=str, required=True)
     parser.add_argument('--test_file', type=str, default='cmrc2018_test_2k.json')
     parser.add_argument('--bert_config_file', type=str, required=True)
+    parser.add_argument('--robert_config_file', type=str, required=True)
     parser.add_argument('--vocab_file', type=str, required=True)
     parser.add_argument('--agg_model_dir', type=str, required=True)
     parser.add_argument('--output_dir', type=str, required=True)
@@ -117,6 +118,7 @@ if __name__ == '__main__':
     # load the bert setting
     if 'albert' not in args.bert_config_file:
         bert_config = BertConfig.from_json_file(args.bert_config_file)
+        robert_config = BertConfig.from_json_file(args.robert_config_file)
     else:
         if 'google' in args.bert_config_file:
             bert_config = AlbertConfig.from_json_file(args.bert_config_file)
@@ -142,26 +144,45 @@ if __name__ == '__main__':
     dev_steps_per_epoch = len(test_features) // args.n_batch
     if len(test_features) % args.n_batch != 0:
         dev_steps_per_epoch += 1
-
-    # init model
+        
+        
     print('init model...')
     models = {}
+    all_weight = 0
     for i,p in enumerate(model_path_list):
         print(f'init model {i}...')
-        model = BertForQuestionAnswering(bert_config)
-        w = float(p.split('/')[-1][:2]) / 100
-        model = BertForQuestionAnswering(bert_config)
+        print(p)
+        if p.split('/')[-1].find('_bert') != -1:
+            print('load bert model')
+            model = BertForQuestionAnswering(bert_config)
+        else:
+            print('load robert model')
+            model = BertForQuestionAnswering(robert_config)
+            
+        w = float(p.split('/')[-1].split('_')[0]) / 100
+        # model = BertForQuestionAnswering(bert_config)
         utils.torch_init_model(model, p)
         model.to(device)
         utils.torch_show_all_params(model)
         if n_gpu > 1:
             model = torch.nn.DataParallel(model)
+        all_weight += w
         models[i] = {'model': model,
                      'weight': w}
+        print(w)
         print(f'model {i} path: {p}')
         print(f'model {i} weight {w}')
+        
     print(f'agg {len(models)} models')
-
+    print(f'Accumulated weight is {all_weight}')
+    
+    for i in models:
+        print(i)
+        print('Original weight: ' + str(models[i]['weight']))
+        models[i]['weight'] /= all_weight
+        print('Normalized weight: ' + str(models[i]['weight']))
+        
     test(models, args, test_examples, test_features, device)
+
 
 

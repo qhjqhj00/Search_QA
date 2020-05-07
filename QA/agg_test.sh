@@ -4,7 +4,8 @@ CURRENT_DIR=$(cd -P -- "$(dirname -- "$0")" && pwd -P)
 
 export MODEL_NAME=robert
 export OUTPUT_DIR=../output # 测试数据的目录
-export BERT_DIR=../model/robert # bert预训练模型目录
+export BERT_DIR=../model/bert # bert预训练模型目录
+export ROBERT_DIR=../model/robert # bert预训练模型目录
 export AGG_DIR=../model/ #需要集成的模型目录
 export GLUE_DIR=../data # 测试数据目录
 TASK_NAME="CMRC2018"
@@ -17,6 +18,7 @@ python agg_test.py \
   --task_name=$TASK_NAME \
   --vocab_file=$BERT_DIR/vocab.txt \
   --bert_config_file=$BERT_DIR/bert_config.json \
+  --robert_config_file=$ROBERT_DIR/bert_config.json \
   --output_dir=$OUTPUT_DIR/ \
   --test_dir1=$GLUE_DIR/test_examples.json \
   --test_dir2=$GLUE_DIR/test_features.json \

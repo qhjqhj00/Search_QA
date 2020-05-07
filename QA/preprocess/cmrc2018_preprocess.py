@@ -154,7 +154,10 @@ def json2features(input_file, output_files, tokenizer, is_training=False, repeat
             for qas in para['qas']:
                 qid = qas['id']
                 ques_text = qas['question']
-                ans_text = qas['answers'][0]['text']
+                if 'answers' in qas:
+                    ans_text = qas['answers'][0]['text']
+                else:
+                    ans_text = ''
 
                 start_position_final = None
                 end_position_final = None
