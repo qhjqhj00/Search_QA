@@ -257,9 +257,10 @@ if __name__ == '__main__':
         # true label
         all_start_positions = torch.tensor([f['start_position'] for f in train_features], dtype=torch.long)
         all_end_positions = torch.tensor([f['end_position'] for f in train_features], dtype=torch.long)
+        all_is_answer = torch.tensor([f['is_answer'] for f in train_features], dtype=torch.long)
 
         train_data = TensorDataset(all_input_ids, all_input_mask, all_segment_ids,
-                                   all_start_positions, all_end_positions)
+                                   all_start_positions, all_end_positions, all_is_answer)
         train_dataloader = DataLoader(train_data, batch_size=args.n_batch, shuffle=True)
 
         print('***** Training *****')
@@ -274,8 +275,8 @@ if __name__ == '__main__':
             with tqdm(total=steps_per_epoch, desc='Epoch %d' % (i + 1)) as pbar:
                 for step, batch in enumerate(train_dataloader):
                     batch = tuple(t.to(device) for t in batch)
-                    input_ids, input_mask, segment_ids, start_positions, end_positions = batch
-                    loss = model(input_ids, segment_ids, input_mask, start_positions, end_positions)
+                    input_ids, input_mask, segment_ids, start_positions, end_positions, is_answer = batch
+                    loss = model(input_ids, segment_ids, input_mask, start_positions, end_positions, is_answer)
                     if n_gpu > 1:
                         loss = loss.mean()  # mean() to average on multi-gpu.
                     total_loss += loss.item()

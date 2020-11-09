@@ -288,6 +288,7 @@ def json2features(input_file, output_files, tokenizer, is_training=False, repeat
 
             start_position = None
             end_position = None
+            is_answer = None
             if is_training:
                 # For training, if our document chunk does not contain an annotation
                 # we throw it out, since there is nothing to predict.
@@ -304,7 +305,9 @@ def json2features(input_file, output_files, tokenizer, is_training=False, repeat
                     if out_of_span:
                         start_position = 0
                         end_position = 0
+                        is_answer = 0
                     else:
+                        is_answer = 1
                         doc_offset = len(query_tokens) + 2
                         start_position = tok_start_position - doc_start + doc_offset
                         end_position = tok_end_position - doc_start + doc_offset
@@ -319,7 +322,8 @@ def json2features(input_file, output_files, tokenizer, is_training=False, repeat
                              'input_mask': input_mask,
                              'segment_ids': segment_ids,
                              'start_position': start_position,
-                             'end_position': end_position})
+                             'end_position': end_position,
+                             'is_answer': is_answer})
             unique_id += 1
 
     print('features num:', len(features))

@@ -1034,14 +1034,16 @@ class BertForQuestionAnswering(PreTrainedBertModel):
         # TODO check with Google if it's normal there is no dropout on the token classifier of SQuAD in the TF version
         # self.dropout = nn.Dropout(config.hidden_dropout_prob)
         self.qa_outputs = nn.Linear(config.hidden_size, 2)
+        self.cls = nn.Linear(config.hidden_size, 2)
         self.apply(self.init_bert_weights)
 
-    def forward(self, input_ids, token_type_ids=None, attention_mask=None, start_positions=None, end_positions=None):
-        sequence_output, _ = self.bert(input_ids, token_type_ids, attention_mask, output_all_encoded_layers=False)
+    def forward(self, input_ids, token_type_ids=None, attention_mask=None, start_positions=None, end_positions=None, is_answer=None):
+        sequence_output, pooled = self.bert(input_ids, token_type_ids, attention_mask, output_all_encoded_layers=False)
         logits = self.qa_outputs(sequence_output)
         start_logits, end_logits = logits.split(1, dim=-1)
         start_logits = start_logits.squeeze(-1)
         end_logits = end_logits.squeeze(-1)
+        cls_logits = self.cls(pooled)
 
         if start_positions is not None and end_positions is not None:
             # If we are on multi-GPU, split add a dimension
@@ -1058,9 +1060,13 @@ class BertForQuestionAnswering(PreTrainedBertModel):
             start_loss = loss_fct(start_logits, start_positions)
             end_loss = loss_fct(end_logits, end_positions)
             total_loss = (start_loss + end_loss) / 2
+            if is_answer is not None:
+                loss_cls = CrossEntropyLoss()
+                loss_aux = loss_cls(cls_logits, is_answer)
+                total_loss = total_loss + 1 * loss_aux
             return total_loss
         else:
-            return start_logits, end_logits
+            return start_logits, end_logits, cls_logits
 
 
 class BertForQA_CLS(PreTrainedBertModel):

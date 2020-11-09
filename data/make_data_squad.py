@@ -1,6 +1,7 @@
 from collections import Counter
 import csv
-
+import re
+import json
 def load(path):
     data = []
     with open(path, 'r', encoding='utf-8', errors='ignore') as f:
@@ -36,9 +37,9 @@ def to_squad(data, context, outfile):
     with open(outfile, 'w') as f:
         json.dump(res, f, ensure_ascii=False)
 
-context = load('NCPPolicies_context_20200301.csv')
+context = load('passage.csv')
 context = {k[0]: k[1] for k in context}
-train = load('NCPPolicies_train_20200301.csv')
+train = load('train.csv')
 
 to_squad(train, context, 'train_squad.json')
 to_squad(train[:1000], context, 'dev_squad.json')
