@@ -43,7 +43,7 @@ class FGM():
 def evaluate(model, args, eval_examples, eval_features, device, global_steps, best_f1, best_em, best_f1_em):
     print("***** Eval *****")
     RawResult = collections.namedtuple("RawResult",
-                                       ["unique_id", "start_logits", "end_logits"])
+                                       ["unique_id", "start_logits", "end_logits", "pred"])
     output_prediction_file = os.path.join(args.checkpoint_dir,
                                           "predictions_steps" + str(global_steps) + ".json")
     output_nbest_file = output_prediction_file.replace('predictions', 'nbest')
@@ -51,6 +51,7 @@ def evaluate(model, args, eval_examples, eval_features, device, global_steps, be
     all_input_ids = torch.tensor([f['input_ids'] for f in eval_features], dtype=torch.long)
     all_input_mask = torch.tensor([f['input_mask'] for f in eval_features], dtype=torch.long)
     all_segment_ids = torch.tensor([f['segment_ids'] for f in eval_features], dtype=torch.long)
+    # all_is_answer = torch.tensor([f['is_answer'] for f in eval_features], dtype=torch.long)
     all_example_index = torch.arange(all_input_ids.size(0), dtype=torch.long)
 
     eval_data = TensorDataset(all_input_ids, all_input_mask, all_segment_ids, all_example_index)
@@ -63,17 +64,20 @@ def evaluate(model, args, eval_examples, eval_features, device, global_steps, be
         input_ids = input_ids.to(device)
         input_mask = input_mask.to(device)
         segment_ids = segment_ids.to(device)
+        # is_answer = is_answer.to(device)
         with torch.no_grad():
-            batch_start_logits, batch_end_logits = model(input_ids, segment_ids, input_mask)
+            batch_start_logits, batch_end_logits, batch_cls_logits = model(input_ids, segment_ids, input_mask)
 
         for i, example_index in enumerate(example_indices):
             start_logits = batch_start_logits[i].detach().cpu().tolist()
             end_logits = batch_end_logits[i].detach().cpu().tolist()
+            y_pred = torch.argmax(batch_cls_logits[i].detach().cpu()).item()
             eval_feature = eval_features[example_index.item()]
             unique_id = int(eval_feature['unique_id'])
             all_results.append(RawResult(unique_id=unique_id,
                                          start_logits=start_logits,
-                                         end_logits=end_logits))
+                                         end_logits=end_logits,
+                                         pred=y_pred))
 
     write_predictions(eval_examples, eval_features, all_results,
                       n_best_size=args.n_best, max_answer_length=args.max_ans_length,
@@ -234,7 +238,7 @@ if __name__ == '__main__':
         if args.float16:
             model.half()
         model.to(device)
-        fgm = FGM(model)
+        #fgm = FGM(model)
         if n_gpu > 1:
             model = torch.nn.DataParallel(model)
         optimizer = get_optimization(model=model,
@@ -293,12 +297,12 @@ if __name__ == '__main__':
                     else:
                         loss.backward()
 
-                    fgm.attack() # 在embedding上添加对抗扰动
+                    """fgm.attack() # 在embedding上添加对抗扰动
                     loss_adv = model(input_ids, segment_ids, input_mask, start_positions, end_positions)
                     if n_gpu > 1:
                         loss_adv = loss_adv.mean() # mean() to average on multi-gpu.
                     loss_adv.backward() # 反向传播，并在正常的grad基础上，累加对抗训练的梯度
-                    fgm.restore() # 恢复embedding参数
+                    fgm.restore() # 恢复embedding参数"""
 
                     optimizer.step()
                     model.zero_grad()

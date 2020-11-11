@@ -8,9 +8,9 @@ export GLUE_DIR=../data # set your data dir
 TASK_NAME="CMRC2018"
 
 python run_mrc.py \
-  --gpu_ids="1,2,3,4" \
+  --gpu_ids="1,2,4,5" \
   --train_epochs=2 \
-  --n_batch=16 \
+  --n_batch=12 \
   --lr=3e-5 \
   --warmup_rate=0.1 \
   --max_seq_length=512 \
